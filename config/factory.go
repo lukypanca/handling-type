@@ -37,7 +37,6 @@ func Init() DB {
 		return InitOracle()
 
 	case "postgres":
-		log.Println("DB_TYPE RAW =", "["+os.Getenv("DB_TYPE")+"]")
 		return InitPostgres()
 
 	default:

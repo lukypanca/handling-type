@@ -18,17 +18,10 @@ type App struct {
 
 func NewApp() *App {
 
-	log.Println(">>> BOOT STARTED")
-
 	// =========================
 	// DATABASE LAYER
 	// =========================
 	dbs := config.Init()
-
-	log.Printf("TYPE OF DB = %T", dbs)
-
-	// optional debug tambahan
-	log.Printf("DB INSTANCE = %+v", dbs)
 
 	// =========================
 	// REPOSITORY LAYER
