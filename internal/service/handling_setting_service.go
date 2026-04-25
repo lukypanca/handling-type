@@ -2,6 +2,8 @@ package service
 
 import (
 	"context"
+	dto "tipe-handling/internal/dto/request"
+	"tipe-handling/internal/mapper"
 	"tipe-handling/internal/model"
 	"tipe-handling/internal/repository"
 )
@@ -20,14 +22,18 @@ func (s *HandlingSettingService) GetAll(ctx context.Context) ([]model.HandlingSe
 	return s.amRepo.FindAll(ctx)
 }
 
-func (s *HandlingSettingService) Create(ctx context.Context, req *model.HandlingSetting) (*model.HandlingSetting, error) {
-	id, err := s.amRepo.Save(ctx, req)
+func (s *HandlingSettingService) Create(
+	ctx context.Context,
+	req *dto.CreateHandlingSettingRequest,
+) (*model.HandlingSetting, error) {
+
+	data := mapper.ToModel(req)
+
+	id, err := s.amRepo.Save(ctx, data)
 	if err != nil {
 		return nil, err
 	}
 
-	req.ID = id
-	return req, nil
+	data.ID = id
+	return data, nil
 }
-
-
