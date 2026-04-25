@@ -13,19 +13,27 @@ import (
 
 type App struct {
 	Engine *router.EngineWrapper
+	DB     config.DB
 }
 
 func NewApp() *App {
 
+	log.Println(">>> BOOT STARTED")
+
 	// =========================
 	// DATABASE LAYER
 	// =========================
-	dbs := config.InitDatabases()
+	dbs := config.Init()
+
+	log.Printf("TYPE OF DB = %T", dbs)
+
+	// optional debug tambahan
+	log.Printf("DB INSTANCE = %+v", dbs)
 
 	// =========================
 	// REPOSITORY LAYER
 	// =========================
-	handlingRepo := repository.NewHandlingSettingRepository(dbs.MUFAM)
+	handlingRepo := repository.NewHandlingSettingRepository(dbs.MUFAM(), dbs.MUFCMS())
 
 	// =========================
 	// SERVICE LAYER

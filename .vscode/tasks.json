@@ -2,7 +2,7 @@
   "version": "2.0.0",
   "tasks": [
     {
-      "label": "run go with oracle",
+      "label": "run go",
       "type": "shell",
       "command": "go run ./cmd",
       "group": {

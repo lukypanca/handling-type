@@ -7,11 +7,15 @@ import (
 )
 
 type HandlingSettingRepository struct {
-	DB *sql.DB
+	CMS *sql.DB
+	AM  *sql.DB
 }
 
-func NewHandlingSettingRepository(db *sql.DB) *HandlingSettingRepository {
-	return &HandlingSettingRepository{DB: db}
+func NewHandlingSettingRepository(cms *sql.DB, am *sql.DB) *HandlingSettingRepository {
+	return &HandlingSettingRepository{
+		CMS: cms,
+		AM:  am,
+	}
 }
 
 func (r *HandlingSettingRepository) FindAll(ctx context.Context) ([]model.HandlingSetting, error) {
@@ -21,7 +25,7 @@ func (r *HandlingSettingRepository) FindAll(ctx context.Context) ([]model.Handli
 		FROM MUFCMS.AR_HANDLING_SETTING
 	`
 
-	rows, err := r.DB.QueryContext(ctx, query)
+	rows, err := r.AM.QueryContext(ctx, query)
 	if err != nil {
 		return nil, err
 	}
@@ -57,7 +61,7 @@ func (r *HandlingSettingRepository) Save(ctx context.Context, handling *model.Ha
 
 	var id int
 
-	_, err := r.DB.ExecContext(
+	_, err := r.AM.ExecContext(
 		ctx,
 		query,
 		handling.DescHandling,
