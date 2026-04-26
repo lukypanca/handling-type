@@ -2,7 +2,8 @@ package handler
 
 import (
 	"net/http"
-	dto "tipe-handling/internal/dto/request"
+	"tipe-handling/internal/dto/request"
+	"tipe-handling/internal/dto/response"
 	"tipe-handling/internal/service"
 
 	"github.com/gin-gonic/gin"
@@ -29,25 +30,37 @@ func (h *HandlingSettingHandler) GetAll(ctx *gin.Context) {
 }
 
 func (h *HandlingSettingHandler) Create(ctx *gin.Context) {
-	req := new(dto.CreateHandlingSettingRequest)
 
-	if err := ctx.ShouldBindJSON(req); err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{
-			"error": err.Error(),
-		})
+	var req request.CreateHandlingSettingRequest
+
+	if err := ctx.ShouldBindJSON(&req); err != nil {
+		ctx.JSON(http.StatusBadRequest,
+			response.Response[any]{
+				Success: false,
+				Message: "invalid request",
+				Error:   err.Error(),
+			},
+		)
 		return
 	}
 
-	result, err := h.Service.Create(ctx.Request.Context(), req)
+	result, err := h.Service.Create(ctx.Request.Context(), &req)
 	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, gin.H{
-			"error": err.Error(),
-		})
+		ctx.JSON(http.StatusInternalServerError,
+			response.Response[any]{
+				Success: false,
+				Message: "failed to create handling setting",
+				Error:   err.Error(),
+			},
+		)
 		return
 	}
 
-	ctx.JSON(http.StatusOK, gin.H{
-		"message": "success",
-		"data":    result,
-	})
+	ctx.JSON(http.StatusCreated,
+		response.Response[*response.CreateHandlingSettingResponse]{
+			Success: true,
+			Message: "success",
+			Data:    result,
+		},
+	)
 }

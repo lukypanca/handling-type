@@ -4,6 +4,7 @@ import (
 	"log"
 	"os"
 	"strconv"
+	"strings"
 )
 
 type DBConfig struct {
@@ -41,5 +42,22 @@ func Init() DB {
 
 	default:
 		panic("DB_TYPE not set")
+	}
+}
+
+func GetBool(key string, def bool) bool {
+	val := strings.ToLower(strings.TrimSpace(os.Getenv(key)))
+
+	if val == "" {
+		return def
+	}
+
+	switch val {
+	case "true", "1", "yes", "y", "on":
+		return true
+	case "false", "0", "no", "n", "off":
+		return false
+	default:
+		return def
 	}
 }

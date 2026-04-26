@@ -1,13 +1,17 @@
 package boot
 
 import (
+	"context"
 	"fmt"
 	"log"
 	"net"
 	"tipe-handling/config"
 	"tipe-handling/internal/handler"
-	"tipe-handling/internal/repository"
+	"tipe-handling/internal/repository/am"
+	"tipe-handling/internal/repository/cms"
+	"tipe-handling/internal/repository/outbox"
 	"tipe-handling/internal/service"
+	"tipe-handling/internal/worker"
 	"tipe-handling/pkg/router"
 )
 
@@ -22,16 +26,25 @@ func NewApp() *App {
 	// DATABASE LAYER
 	// =========================
 	dbs := config.Init()
+	amDB := dbs.MUFAM()
+	cmsDB := dbs.MUFCMS()
 
 	// =========================
 	// REPOSITORY LAYER
 	// =========================
-	handlingRepo := repository.NewHandlingSettingRepository(dbs.MUFAM(), dbs.MUFCMS())
+	amRepo := am.NewHandlingSettingRepository(amDB)
+	cmsRepo := cms.NewHandlingSettingRepository(cmsDB)
+	outboxRepo := outbox.NewRepository(amDB)
 
 	// =========================
 	// SERVICE LAYER
 	// =========================
-	handlingService := service.NewHandlingSettingService(handlingRepo)
+	handlingService := service.NewHandlingSettingService(
+		amDB,
+		amRepo,
+		cmsRepo,
+		outboxRepo,
+	)
 
 	// =========================
 	// HANDLER LAYER
@@ -42,6 +55,19 @@ func NewApp() *App {
 	// ROUTER (GIN)
 	// =========================
 	engine := router.SetupRoutes(handlingHandler)
+
+	// =========================
+	// WORKER START (CMS SYNC)
+	// =========================
+	ctx := context.Background()
+
+	cmsWorker := worker.NewCmsSyncWorker(cmsDB, outboxRepo, cmsRepo)
+
+	if config.GetBool("ENABLE_CMS_WORKER", false) {
+		go cmsWorker.Start(ctx)
+	} else {
+		log.Println("CMS Worker disabled")
+	}
 
 	return &App{
 		Engine: engine,

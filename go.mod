@@ -2,10 +2,7 @@ module tipe-handling
 
 go 1.26.2
 
-require (
-	github.com/godror/godror v0.44.0
-	github.com/joho/godotenv v1.5.1
-)
+require github.com/joho/godotenv v1.5.1
 
 require (
 	github.com/bytedance/gopkg v0.1.3 // indirect
@@ -42,14 +39,9 @@ require (
 )
 
 require (
-	github.com/VictoriaMetrics/easyproto v0.1.4 // indirect
 	github.com/gin-gonic/gin v1.12.0
-	github.com/go-logfmt/logfmt v0.6.0 // indirect
-	github.com/godror/knownpb v0.3.0 // indirect
 	github.com/jackc/pgx/v5 v5.9.2
 	github.com/sijms/go-ora/v2 v2.9.0
-	golang.org/x/exp v0.0.0-20250506013437-ce4c2cf36ca6 // indirect
 	golang.org/x/sync v0.19.0 // indirect
-	golang.org/x/term v0.40.0 // indirect
 	google.golang.org/protobuf v1.36.10 // indirect
 )
