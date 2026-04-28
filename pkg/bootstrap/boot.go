@@ -34,6 +34,8 @@ func NewApp() *App {
 	// =========================
 	amRepo := am.NewHandlingSettingRepository(amDB)
 	cmsRepo := cms.NewHandlingSettingRepository(cmsDB)
+	amRepoSpSpt := am.NewHandlingSpSptRepository(amDB)
+	cmsRepoSpSpt := cms.NewHandlingSpSptRepository(cmsDB)
 	outboxRepo := outbox.NewRepository(amDB)
 
 	// =========================
@@ -45,11 +47,17 @@ func NewApp() *App {
 		cmsRepo,
 		outboxRepo,
 	)
+	handlingSpSptService := service.NewHandlingSpSptService(
+		amDB,
+		amRepoSpSpt,
+		cmsRepoSpSpt,
+		outboxRepo,
+	)
 
 	// =========================
 	// HANDLER LAYER
 	// =========================
-	handlingHandler := handler.NewHandlingSettingHandler(handlingService)
+	handlingHandler := handler.NewHandlingSettingHandler(handlingService, handlingSpSptService)
 
 	// =========================
 	// ROUTER (GIN)

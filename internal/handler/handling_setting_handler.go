@@ -10,11 +10,15 @@ import (
 )
 
 type HandlingSettingHandler struct {
-	Service *service.HandlingSettingService
+	Service      *service.HandlingSettingService
+	SpSptService *service.HandlingSpSptService
 }
 
-func NewHandlingSettingHandler(s *service.HandlingSettingService) *HandlingSettingHandler {
-	return &HandlingSettingHandler{Service: s}
+func NewHandlingSettingHandler(s *service.HandlingSettingService, ss *service.HandlingSpSptService) *HandlingSettingHandler {
+	return &HandlingSettingHandler{
+		Service:      s,
+		SpSptService: ss,
+	}
 }
 
 func (h *HandlingSettingHandler) GetAll(ctx *gin.Context) {
@@ -61,6 +65,41 @@ func (h *HandlingSettingHandler) Create(ctx *gin.Context) {
 			Success: true,
 			Message: "success",
 			Data:    result,
+		},
+	)
+}
+
+func (h *HandlingSettingHandler) CreateSpSpt(ctx *gin.Context) {
+	var req request.CreateHandlingSpSptRequest
+
+	if err := ctx.ShouldBindJSON(&req); err != nil {
+		ctx.JSON(http.StatusBadRequest,
+			response.Response[any]{
+				Success: false,
+				Message: "invalid request",
+				Error:   err.Error(),
+			},
+		)
+		return
+	}
+
+	result, err := h.SpSptService.Create(ctx.Request.Context(), &req)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError,
+			response.Response[any]{
+				Success: false,
+				Message: "failed to create handling sp spt",
+				Error:   err.Error(),
+			},
+		)
+		return
+	}
+
+	ctx.JSON(http.StatusCreated,
+		response.Response[*response.CreateHandlingSpSptResponse]{
+			Success: true,
+			Message: "success",
+			Data: result,
 		},
 	)
 }

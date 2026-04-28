@@ -17,6 +17,18 @@ func ToHandlingSettingModel(req *dto.CreateHandlingSettingRequest) *model.Handli
 	}
 }
 
+func ToHandlingSpSptModel(req *dto.CreateHandlingSpSptRequest) *model.HandlingSpSpt {
+	return &model.HandlingSpSpt{
+		TipeHandling: req.TipeHandling,
+		DescHandling: &req.DescHandling,
+		StartOD:      req.StartOD,
+		EndOD:        req.EndOD,
+		FlagRod:      req.FlagRod,
+		Status:       req.Status,
+		IsActive:     req.IsActive,
+	}
+}
+
 func ToHandlingBranchModel(req request.BranchRequest, handlingID int) *model.HandlingBranch {
 
 	return &model.HandlingBranch{
