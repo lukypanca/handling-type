@@ -14,20 +14,20 @@ import (
 	"tipe-handling/internal/repository/outbox"
 )
 
-type CmsSyncWorker struct {
+type CmsSyncSpWorker struct {
 	db         *sql.DB
 	outboxRepo *outbox.Repository
-	cmsRepo    *cms.HandlingSettingRepository
+	cmsRepo    *cms.HandlingSpSptRepository
 	interval   time.Duration
 }
 
-func NewCmsSyncWorker(
+func NewCmsSyncSpWorker(
 	db *sql.DB,
 	outboxRepo *outbox.Repository,
-	cmsRepo *cms.HandlingSettingRepository,
-) *CmsSyncWorker {
+	cmsRepo *cms.HandlingSpSptRepository,
+) *CmsSyncSpWorker {
 
-	return &CmsSyncWorker{
+	return &CmsSyncSpWorker{
 		db:         db,
 		outboxRepo: outboxRepo,
 		cmsRepo:    cmsRepo,
@@ -35,14 +35,14 @@ func NewCmsSyncWorker(
 	}
 }
 
-func (w *CmsSyncWorker) Start(ctx context.Context) {
+func (w *CmsSyncSpWorker) Start(ctx context.Context) {
 
-	log.Println("🚀 CMS Sync Worker started")
+	log.Println("🚀 CMS Sync SP Worker started")
 
 	for {
 		select {
 		case <-ctx.Done():
-			log.Println("🛑 CMS Sync Worker stopped")
+			log.Println("🛑 CMS Sync SP Worker stopped")
 			return
 		default:
 			w.process(ctx)
@@ -52,9 +52,9 @@ func (w *CmsSyncWorker) Start(ctx context.Context) {
 	}
 }
 
-func (w *CmsSyncWorker) process(ctx context.Context) {
+func (w *CmsSyncSpWorker) process(ctx context.Context) {
 
-	events, err := w.outboxRepo.FindPending(ctx, enum.HandlingCreated, 50)
+	events, err := w.outboxRepo.FindPending(ctx, enum.SpCreated, 50)
 	if err != nil {
 		log.Println("failed fetch outbox:", err)
 		return
@@ -74,12 +74,12 @@ func (w *CmsSyncWorker) process(ctx context.Context) {
 	}
 }
 
-func (w *CmsSyncWorker) handleEvent(ctx context.Context, event outbox.OutboxEvent) error {
+func (w *CmsSyncSpWorker) handleEvent(ctx context.Context, event outbox.OutboxEvent) error {
 
 	switch event.EventType {
 
-	case enum.HandlingCreated:
-		return w.syncHandlingCreated(ctx, event.Payload)
+	case enum.SpCreated:
+		return w.syncSpCreated(ctx, event.Payload)
 
 	default:
 		log.Println("unknown event:", event.EventType)
@@ -87,10 +87,10 @@ func (w *CmsSyncWorker) handleEvent(ctx context.Context, event outbox.OutboxEven
 	}
 }
 
-func (w *CmsSyncWorker) syncHandlingCreated(ctx context.Context, payload string) error {
+func (w *CmsSyncSpWorker) syncSpCreated(ctx context.Context, payload string) error {
 
 	// 1. decode payload
-	var req request.CreateHandlingSettingRequest
+	var req request.CreateHandlingSpSptRequest
 	if err := json.Unmarshal([]byte(payload), &req); err != nil {
 		return err
 	}
@@ -104,11 +104,11 @@ func (w *CmsSyncWorker) syncHandlingCreated(ctx context.Context, payload string)
 		_ = tx.Rollback()
 	}()
 
-	data := mapper.ToHandlingSettingModel(&req)
+	data := mapper.ToHandlingSpSptModel(&req)
 	auditInfo := audit.FromContext(ctx)
 
 	// insert tabel AR_HANDLING_SETTING_
-	id, err := w.cmsRepo.SaveHandlingSetting(ctx, tx, data, auditInfo)
+	id, err := w.cmsRepo.SaveHandlingSpSpt(ctx, tx, data, auditInfo)
 	if err != nil {
 		return err
 	}
@@ -116,7 +116,7 @@ func (w *CmsSyncWorker) syncHandlingCreated(ctx context.Context, payload string)
 	// insert tabel AR_HANDLING_BRANCH
 	for _, r := range req.Branches {
 		model := mapper.ToHandlingBranchModel(r, id)
-		if err := w.cmsRepo.SaveHandlingBranch(ctx, tx, id, model, auditInfo); err != nil {
+		if err := w.cmsRepo.SaveHandlingBranchSpSpt(ctx, tx, id, model, auditInfo); err != nil {
 			return err
 		}
 	}
@@ -124,47 +124,47 @@ func (w *CmsSyncWorker) syncHandlingCreated(ctx context.Context, payload string)
 	// insert tabel AR_HANDLING_OBJECT_GROUP
 	for _, r := range req.ObjectGroups {
 		model := mapper.ToHandlingObjectModel(r, id)
-		if err := w.cmsRepo.SaveHandlingObject(ctx, tx, id, model, auditInfo); err != nil {
+		if err := w.cmsRepo.SaveHandlingObjectSpSpt(ctx, tx, id, model, auditInfo); err != nil {
 			return err
 		}
-	}	
+	}
 
 	// insert tabel AR_HANDLING_TIPE_NASABAH
 	for _, r := range req.TipeNasabah {
 		model := mapper.ToHandlingTipeNasabah(r, id)
-		if err := w.cmsRepo.SaveHandlingTipeNasabah(ctx, tx, id, model, auditInfo); err != nil {
+		if err := w.cmsRepo.SaveHandlingTipeNasabahSpSpt(ctx, tx, id, model, auditInfo); err != nil {
 			return err
 		}
 	}
-	
+
 	// insert tabel AR_HANDLING_COLL_SCORING
 	for _, r := range req.CollScoring {
 		model := mapper.ToHandlingCollScoring(r, id)
-		if err := w.cmsRepo.SaveHandlingCollScoring(ctx, tx, id, model, auditInfo); err != nil {
+		if err := w.cmsRepo.SaveHandlingCollScoringSpSpt(ctx, tx, id, model, auditInfo); err != nil {
 			return err
 		}
 	}
-	
+
 	// insert tabel AR_HANDLING_PAYMENT_TYPE
 	for _, r := range req.PaymentTypes {
 		model := mapper.ToHandlingPaymentType(r, id)
-		if err := w.cmsRepo.SaveHandlingPaymentType(ctx, tx, id, model, auditInfo); err != nil {
+		if err := w.cmsRepo.SaveHandlingPaymentTypeSpSpt(ctx, tx, id, model, auditInfo); err != nil {
 			return err
 		}
-	}	
+	}
 
 	// insert tabel AR_HANDLING_T_PEMBIAYAAN
 	for _, r := range req.TipePembiayaan {
 		model := mapper.ToHandlingTipePembiayaan(r, id)
-		if err := w.cmsRepo.SaveHandlingTipePembiayaan(ctx, tx, id, model, auditInfo); err != nil {
+		if err := w.cmsRepo.SaveHandlingTipePembiayaanSpSpt(ctx, tx, id, model, auditInfo); err != nil {
 			return err
 		}
 	}
-	
+
 	// insert tabel AR_HANDLING_S_PEMBIAYAAN
 	for _, r := range req.SkemaPembiayaan {
 		model := mapper.ToHandlingSkemaPembiayaan(r, id)
-		if err := w.cmsRepo.SaveHandlingSkemaPembiayaan(ctx, tx, id, model, auditInfo); err != nil {
+		if err := w.cmsRepo.SaveHandlingSkemaPembiayaanSpSpt(ctx, tx, id, model, auditInfo); err != nil {
 			return err
 		}
 	}
@@ -172,7 +172,7 @@ func (w *CmsSyncWorker) syncHandlingCreated(ctx context.Context, payload string)
 	// insert tabel AR_HANDLING_GOL_PRODUK
 	for _, r := range req.GolProduk {
 		model := mapper.ToHandlingPenggolonganProduct(r, id)
-		if err := w.cmsRepo.SaveHandlingPenggolonganProduct(ctx, tx, id, model, auditInfo); err != nil {
+		if err := w.cmsRepo.SaveHandlingPenggolonganProductSpSpt(ctx, tx, id, model, auditInfo); err != nil {
 			return err
 		}
 	}
@@ -180,7 +180,7 @@ func (w *CmsSyncWorker) syncHandlingCreated(ctx context.Context, payload string)
 	// insert tabel AR_HANDLING_BANK_PENDANAAN
 	for _, r := range req.BankPendanaan {
 		model := mapper.ToHandlingBankPendanaan(r, id)
-		if err := w.cmsRepo.SaveHandlingBankPendanaan(ctx, tx, id, model, auditInfo); err != nil {
+		if err := w.cmsRepo.SaveHandlingBankPendanaanSpSpt(ctx, tx, id, model, auditInfo); err != nil {
 			return err
 		}
 	}

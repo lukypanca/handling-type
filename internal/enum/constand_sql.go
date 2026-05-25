@@ -1,18 +1,23 @@
 package enum
 
+const HandlingCreated = "HANDLING_CREATED"
+const ExcludeContractCreated = "EXCLUDE_CONTRACT_CREATED"
+
 const InsertHandlingSetting = `
-		INSERT INTO MUFAM.CMS_AR_HANDLING_SETTING_ (
+		INSERT INTO MUFAM.CMS_AR_HANDLING_SETTING (
+			HANDLING_SETTING_ID,
 			DESC_HANDLING, 
 			TIPE_HANDLING,
+			TIPE_HANDLING_ID,
 			START_OD,
 			END_OD,
 			STATUS,
-			IS_ACTIVE,
 			INSERT_DATE,
 			INSERT_BY,
 			UPDATE_DATE,
 			UPDATE_BY
 		) VALUES (
+		 	MUFAM.CMS_AR_HANDLING_SEQ.NEXTVAL,
 			:1, :2, :3, :4, :5, :6, trunc(:7), :8, trunc(:9), :10
 		)
 		RETURNING HANDLING_SETTING_ID INTO :11
@@ -24,7 +29,6 @@ const InsertBranchQuery = `
     		KODE_CABANG,
     		NAMA_CABANG,
     		KODE_AREA,
-    		NAMA_AREA,
     		INSERT_DATE,
     		INSERT_BY,
     		UPDATE_DATE,
@@ -35,17 +39,15 @@ const InsertBranchQuery = `
     		:2,
     		:3,
     		:4,
-    		:5,
-    		trunc(:6),
-    		:7,
-    		trunc(:8),
-    		:9
+    		trunc(:5),
+    		:6,
+    		trunc(:7),
+    		:8
 		)
 `
 const InsertObjectQuery = `
 		INSERT INTO MUFAM.CMS_AR_HANDLING_OBJECT_GROUP (
     		HANDLING_SETTING_ID,
-    		OBJECT_CODE,
     		OBJECT_GROUP,
     		INSERT_DATE,
     		INSERT_BY,
@@ -55,11 +57,10 @@ const InsertObjectQuery = `
 		VALUES (
     		:1,
     		:2,
-    		:3,
-    		trunc(:4),
-    		:5,
-    		trunc(:6),
-    		:7
+    		trunc(:3),
+    		:4,
+    		trunc(:5),
+    		:6
 		)
 `
 const InsertTipeNasabahQuery = `
@@ -206,4 +207,46 @@ INSERT INTO MUFAM.CMS_AR_HANDLING_BANK_PENDANAAN (
     		trunc(:6),
     		:7
 		)
+`
+const InsertCmsArExcludeContract = `
+	INSERT INTO MUFAM.CMS_AR_EXCLUDE_CONTRACT (
+		CONTRACT_NO,
+		NAMA_NASABAH,
+		OBJECT_GROUP,
+		TIPE_NASABAH,
+		COLL_SCORING,
+		PAYMENT_TYPE,
+		TIPE_PEMBIAYAAN,
+		SKEMA_PEMBIAYAAN,
+		PENGGOLONGAN_PRODUCT,
+		BANK_PENDANAAN,
+		MARKETING_PROGRAM,
+		TIPE_HANDLING,
+		STATUS_EXCLUDE,
+		IS_ACTIVE,
+		INSERT_DATE,
+		INSERT_BY,
+		UPDATE_DATE,
+		UPDATE_BY
+	)
+	VALUES (
+		:1,
+		:2,
+		:3,
+		:4,
+		:5,
+		:6,
+		:7,
+		:8,
+		:9,
+		:10,
+		:11,
+		:12,
+		:13,
+		:14,
+		TRUNC(:15),
+		:16,
+		TRUNC(:17),
+		:18
+	)
 `

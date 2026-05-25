@@ -1,13 +1,14 @@
 package request
 
 type CreateHandlingSettingRequest struct {
-	BranchType   string `json:"branch_type"`
-	DescHandling string `json:"desc_handling"`
-	TipeHandling string `json:"tipe_handling"`
-	StartOD      int    `json:"start_od"`
-	EndOD        int    `json:"end_od"`
-	Status       string `json:"status"`
-	IsActive     int    `json:"is_active"`
+	BranchType     string `json:"branch_type"`
+	DescHandling   string `json:"desc_handling"`
+	TipeHandling   string `json:"tipe_handling"`
+	TipeHandlingId int    `json:"tipe_handling_id"`
+	StartOD        int    `json:"start_od"`
+	EndOD          int    `json:"end_od"`
+	Status         string `json:"status"`
+	// IsActive       int    `json:"is_active"`
 
 	Branches        []BranchRequest          `json:"branches"`
 	ObjectGroups    []ObjectGroupRequest     `json:"object_groups"`
@@ -21,14 +22,15 @@ type CreateHandlingSettingRequest struct {
 }
 
 type CreateHandlingSpSptRequest struct {
-	BranchType   string `json:"branch_type"`
-	DescHandling string `json:"desc_handling"`
-	TipeHandling string `json:"tipe_handling"`
-	StartOD      int    `json:"start_od"`
-	EndOD        int    `json:"end_od"`
-	FlagRod      string `json:"flag_rod"`
-	Status       string `json:"status"`
-	IsActive     int    `json:"is_active"`
+	BranchType     string `json:"branch_type"`
+	DescHandling   string `json:"desc_handling"`
+	TipeHandling   string `json:"tipe_handling"`
+	TipeHandlingId int    `json:"tipe_handling_id"`
+	StartOD        int    `json:"start_od"`
+	EndOD          int    `json:"end_od"`
+	FlagRod        string `json:"flag_rod"`
+	Status         string `json:"status"`
+	// IsActive     int    `json:"is_active"`
 
 	Branches        []BranchRequest          `json:"branches"`
 	ObjectGroups    []ObjectGroupRequest     `json:"object_groups"`

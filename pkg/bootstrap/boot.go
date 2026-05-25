@@ -37,6 +37,9 @@ func NewApp() *App {
 	amRepoSpSpt := am.NewHandlingSpSptRepository(amDB)
 	cmsRepoSpSpt := cms.NewHandlingSpSptRepository(cmsDB)
 	outboxRepo := outbox.NewRepository(amDB)
+	amExcelRepo := am.NewHandlingSettingExcelRepository(amDB)
+	amExcludeContractRepo := am.NewExcludeContractRepository(amDB)
+	// cmsExcludeContractRepo := cms.NewExcludeContractRepository(cmsDB)
 
 	// =========================
 	// SERVICE LAYER
@@ -53,16 +56,28 @@ func NewApp() *App {
 		cmsRepoSpSpt,
 		outboxRepo,
 	)
+	handlingDataService := service.NewHandlingSettingExcelService(
+		amDB,
+		amExcelRepo,
+	)
+	excludeContractService := service.NewExcludeContractService(
+		amDB,
+		amExcludeContractRepo,
+		outboxRepo,
+	)
 
 	// =========================
 	// HANDLER LAYER
 	// =========================
 	handlingHandler := handler.NewHandlingSettingHandler(handlingService, handlingSpSptService)
+	handlingDataHandler := handler.NewHandlingDataHandler(handlingDataService)
+	excludeContractHandler := handler.NewExcludeContractHandler(excludeContractService)
+	handlingSpHandler := handler.NewHandlingSpHandler(handlingSpSptService)
 
 	// =========================
 	// ROUTER (GIN)
 	// =========================
-	engine := router.SetupRoutes(handlingHandler)
+	engine := router.SetupRoutes(handlingHandler, handlingDataHandler, excludeContractHandler, handlingSpHandler)
 
 	// =========================
 	// WORKER START (CMS SYNC)
@@ -70,9 +85,13 @@ func NewApp() *App {
 	ctx := context.Background()
 
 	cmsWorker := worker.NewCmsSyncWorker(cmsDB, outboxRepo, cmsRepo)
+	cmsSpWorker := worker.NewCmsSyncSpWorker(cmsDB, outboxRepo, cmsRepoSpSpt)
+	// cmsExcContWorker := worker.NewCmsSyncExcContWorker(cmsDB, outboxRepo, cmsExcludeContractRepo)
 
 	if config.GetBool("ENABLE_CMS_WORKER", false) {
 		go cmsWorker.Start(ctx)
+		go cmsSpWorker.Start(ctx)
+		// go cmsExcContWorker.Start(ctx)
 	} else {
 		log.Println("CMS Worker disabled")
 	}

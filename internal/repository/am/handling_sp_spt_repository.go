@@ -19,7 +19,7 @@ func NewHandlingSpSptRepository(db *sql.DB) *HandlingSpSptRepository {
 func (r *HandlingSpSptRepository) SaveHandlingSpSpt(
 	ctx context.Context, tx *sql.Tx, handling *model.HandlingSpSpt, audit audit.Info) (int, error) {
 
-	query := enum.InsertHandlingSpSpt
+	query := enum.InsertSpSpt
 
 	var id int
 
@@ -28,11 +28,11 @@ func (r *HandlingSpSptRepository) SaveHandlingSpSpt(
 		query,
 		handling.TipeHandling,
 		handling.DescHandling,
+		handling.TipeHandlingId,
 		handling.StartOD,
 		handling.EndOD,
 		handling.FlagRod,
 		handling.Status,
-		handling.IsActive,
 		audit.Now,
 		audit.User,
 		audit.Now,
@@ -57,7 +57,6 @@ func (r *HandlingSpSptRepository) SaveHandlingBranchSpSpt(
 		handling.KodeCabang,
 		handling.NamaCabang,
 		handling.KodeArea,
-		handling.NamaArea,
 		audit.Now,
 		audit.User,
 		audit.Now,
@@ -74,7 +73,6 @@ func (r *HandlingSpSptRepository) SaveHandlingObjectSpSpt(
 		ctx,
 		query,
 		id,
-		handling.ObjectCode,
 		handling.ObjectGroup,
 		audit.Now,
 		audit.User,

@@ -40,17 +40,18 @@ func (r *Repository) Insert(ctx context.Context, event OutboxEvent) error {
 	return err
 }
 
-func (r *Repository) FindPending(ctx context.Context, limit int) ([]OutboxEvent, error) {
+func (r *Repository) FindPending(ctx context.Context, eventType string, limit int) ([]OutboxEvent, error) {
 
 	query := `
 		SELECT ID, EVENT_TYPE, PAYLOAD, STATUS, RETRY, CREATED_AT, UPDATED_AT
 		FROM MUFAM.OUTBOX_EVENT
 		WHERE STATUS = 'NEW'
+		AND EVENT_TYPE = :1
 		ORDER BY CREATED_AT
-		FETCH FIRST :1 ROWS ONLY
+		FETCH FIRST :2 ROWS ONLY
 	`
 
-	rows, err := r.db.QueryContext(ctx, query, limit)
+	rows, err := r.db.QueryContext(ctx, query, eventType, limit)
 	if err != nil {
 		return nil, err
 	}

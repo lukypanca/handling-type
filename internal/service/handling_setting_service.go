@@ -6,6 +6,7 @@ import (
 	"log"
 	"tipe-handling/internal/dto/request"
 	"tipe-handling/internal/dto/response"
+	"tipe-handling/internal/enum"
 	"tipe-handling/internal/mapper"
 	audit "tipe-handling/internal/metadata"
 	"tipe-handling/internal/model"
@@ -145,7 +146,7 @@ func (s *HandlingSettingService) Create(
 	// 5. OUTBOX EVENT (ASYNC CMS SYNC)
 	// =========================
 	event := outbox.OutboxEvent{
-		EventType: "HANDLING_CREATED",
+		EventType: enum.HandlingCreated,
 		Payload:   mapper.ToJSON(req), // atau struct result
 		Status:    outbox.StatusNew,
 		Retry:     0,

@@ -1,0 +1,101 @@
+package model
+
+import "time"
+
+type CmsRptAgingMis struct {
+	AgingDate              *time.Time
+	TglProsesAging         *time.Time
+	TglPpd                 *time.Time
+	MonthPpdDate           *int
+	YearPpdDate            *string
+	TglPengajuanReschedule *time.Time
+	HariReschedule         *string
+	NamaArea               *string
+	KodeArea               *string
+	NamaCabang             *string
+	KodeCabang             *string
+	Mufnet                 *string
+	KodeMufnet             *string
+	FinancialType          *string
+	ContractNo             *string
+	CustName               *string
+	Pekerjaan              *string
+	Pasangan               *string
+	Dealer                 *string
+	Merk                   *string
+	Jenis                  *string
+	Model                  *string
+	TahunKendaraan         *string
+	Nopol                  *string
+	Rangka                 *string
+	Mesin                  *string
+	StatusJf               *string
+	Object                 *string
+	Portfolio              *string
+	PenggolonganProduct    *string
+	SalesThrough           *string
+	MarketingInternal      *string
+	MarketingHead          *string
+	IntName                *string
+	CfoName                *string
+	NameCa                 *string
+	Otr                    *float64
+	EffRate                *float64
+	NettDp                 *float64
+	Ke                     *int
+	Tenor                  *int
+	JatuhTempo             *time.Time
+	StatusKontrak          *string
+	Hari                   *int
+	BucketAwal             *string
+	BucketAkhir            *string
+	PembayaranM1           *string
+	PembayaranM2           *string
+	PembayaranM3           *string
+	PembayaranTerakhir     *time.Time
+	PaymentType            *string
+	ApplPrincipalAmt       *float64
+	Angsuran               *float64
+	OstDenda               *float64
+	TotalTitipan           *float64
+	BalIntr                *float64
+	BalPrin                *float64
+	NoOid                  *string
+	OdOid                  *int
+	TipeRestructure        *string
+	NoContractOld          *string
+	BankPendanaan          *string
+	FlagAging              *int
+	TglProses              *time.Time
+	SettlementNo           *string
+	Channel                *string
+	LapanganUsaha          *string
+	NamaProduct            *string
+	NamaRefMitra           *string
+	DueInstall             *int
+	InternalNpk            *string
+	Posisi                 *int
+	TambahanTenor          *int
+	TanggalTarik           *time.Time
+	NamaPicTarik           *string
+}
+
+type CmsArExcludeContract struct {
+	ContractNo          *string
+	NamaNasabah         *string
+	ObjectGroup         *string
+	TipeNasabah         *string
+	CollScoring         *string
+	PaymentType         *string
+	TipePembiayaan      *string
+	SkemaPembiayaan     *string
+	PenggolonganProduct *string
+	BankPendanaan       *string
+	MarketingProgram    *string
+	TipeHandling        *string
+	StatusExclude       *string
+	IsActive            *int
+	InsertDate          *time.Time
+	InsertBy            *string
+	UpdateDate          *time.Time
+}

@@ -28,10 +28,11 @@ func (r *HandlingSpSptRepository) SaveHandlingSpSpt(
 		query,
 		handling.DescHandling,
 		handling.TipeHandling,
+		handling.TipeHandlingId,
 		handling.StartOD,
 		handling.EndOD,
+		handling.FlagRod,
 		handling.Status,
-		handling.IsActive,
 		audit.Now,
 		audit.User,
 		audit.Now,
@@ -47,7 +48,7 @@ func (r *HandlingSpSptRepository) SaveHandlingSpSpt(
 }
 
 func (r *HandlingSpSptRepository) SaveHandlingBranchSpSpt(
-	ctx context.Context, tx *sql.Tx, id int, handling *model.HandlingBranchSpSpt, audit audit.Info) error {
+	ctx context.Context, tx *sql.Tx, id int, handling *model.HandlingBranch, audit audit.Info) error {
 	query := enum.InsertSpSptBranchQueryCms
 	_, err := tx.ExecContext(
 		ctx,
@@ -56,7 +57,6 @@ func (r *HandlingSpSptRepository) SaveHandlingBranchSpSpt(
 		handling.KodeCabang,
 		handling.NamaCabang,
 		handling.KodeArea,
-		handling.NamaArea,
 		audit.Now,
 		audit.User,
 		audit.Now,
@@ -67,13 +67,12 @@ func (r *HandlingSpSptRepository) SaveHandlingBranchSpSpt(
 }
 
 func (r *HandlingSpSptRepository) SaveHandlingObjectSpSpt(
-	ctx context.Context, tx *sql.Tx, id int, handling *model.HandlingObjectSpSpt, audit audit.Info) error {
+	ctx context.Context, tx *sql.Tx, id int, handling *model.HandlingObject, audit audit.Info) error {
 	query := enum.InsertSpSptObjectQueryCms
 	_, err := tx.ExecContext(
 		ctx,
 		query,
 		id,
-		handling.ObjectCode,
 		handling.ObjectGroup,
 		audit.Now,
 		audit.User,
@@ -85,7 +84,7 @@ func (r *HandlingSpSptRepository) SaveHandlingObjectSpSpt(
 }
 
 func (r *HandlingSpSptRepository) SaveHandlingTipeNasabahSpSpt(
-	ctx context.Context, tx *sql.Tx, id int, handling *model.HandlingTipeNasabahSpSpt, audit audit.Info) error {
+	ctx context.Context, tx *sql.Tx, id int, handling *model.HandlingTipeNasabah, audit audit.Info) error {
 	query := enum.InsertSpSptTipeNasabahQueryCms
 	_, err := tx.ExecContext(
 		ctx,
@@ -103,7 +102,7 @@ func (r *HandlingSpSptRepository) SaveHandlingTipeNasabahSpSpt(
 }
 
 func (r *HandlingSpSptRepository) SaveHandlingCollScoringSpSpt(
-	ctx context.Context, tx *sql.Tx, id int, handling *model.HandlingCollScoringSpSpt, audit audit.Info) error {
+	ctx context.Context, tx *sql.Tx, id int, handling *model.HandlingCollScoring, audit audit.Info) error {
 	query := enum.InsertSpSptCollScoringQueryCms
 	_, err := tx.ExecContext(
 		ctx,
@@ -121,7 +120,7 @@ func (r *HandlingSpSptRepository) SaveHandlingCollScoringSpSpt(
 }
 
 func (r *HandlingSpSptRepository) SaveHandlingPaymentTypeSpSpt(
-	ctx context.Context, tx *sql.Tx, id int, handling *model.HandlingPaymentTypeSpSpt, audit audit.Info) error {
+	ctx context.Context, tx *sql.Tx, id int, handling *model.HandlingPaymentType, audit audit.Info) error {
 	query := enum.InsertSpSptPaymentTypeQueryCms
 	_, err := tx.ExecContext(
 		ctx,
@@ -139,7 +138,7 @@ func (r *HandlingSpSptRepository) SaveHandlingPaymentTypeSpSpt(
 }
 
 func (r *HandlingSpSptRepository) SaveHandlingTipePembiayaanSpSpt(
-	ctx context.Context, tx *sql.Tx, id int, handling *model.HandlingTipePembiayaanSpSpt, audit audit.Info) error {
+	ctx context.Context, tx *sql.Tx, id int, handling *model.HandlingTipePembiayaan, audit audit.Info) error {
 	query := enum.InsertSpSptTipePembiayaanQueryCms
 	_, err := tx.ExecContext(
 		ctx,
@@ -157,7 +156,7 @@ func (r *HandlingSpSptRepository) SaveHandlingTipePembiayaanSpSpt(
 }
 
 func (r *HandlingSpSptRepository) SaveHandlingSkemaPembiayaanSpSpt(
-	ctx context.Context, tx *sql.Tx, id int, handling *model.HandlingSkemaPembiayaanSpSpt, audit audit.Info) error {
+	ctx context.Context, tx *sql.Tx, id int, handling *model.HandlingSkemaPembiayaan, audit audit.Info) error {
 	query := enum.InsertSpSptSkemaPembiayaanQueryCms
 	_, err := tx.ExecContext(
 		ctx,
@@ -175,7 +174,7 @@ func (r *HandlingSpSptRepository) SaveHandlingSkemaPembiayaanSpSpt(
 }
 
 func (r *HandlingSpSptRepository) SaveHandlingPenggolonganProductSpSpt(
-	ctx context.Context, tx *sql.Tx, id int, handling *model.HandlingPenggolonganProductSpSpt, audit audit.Info) error {
+	ctx context.Context, tx *sql.Tx, id int, handling *model.HandlingPenggolonganProduct, audit audit.Info) error {
 	query := enum.InsertSpSptGolonganProductQueryCms
 	_, err := tx.ExecContext(
 		ctx,
@@ -193,7 +192,7 @@ func (r *HandlingSpSptRepository) SaveHandlingPenggolonganProductSpSpt(
 }
 
 func (r *HandlingSpSptRepository) SaveHandlingBankPendanaanSpSpt(
-	ctx context.Context, tx *sql.Tx, id int, handling *model.HandlingBankPendanaanSpSpt, audit audit.Info) error {
+	ctx context.Context, tx *sql.Tx, id int, handling *model.HandlingBankPendanaan, audit audit.Info) error {
 	query := enum.InsertSpSptBankPendanaanQueryCms
 	_, err := tx.ExecContext(
 		ctx,
